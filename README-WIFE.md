@@ -24,13 +24,13 @@ The sign-in browser uses a temporary profile that is deleted afterward. The help
 
 ## Daily use
 
-Put photos or videos into:
+Put photos or videos into the **Photo Backup Drop** folder in your Downloads folder. You can also use:
 
 ```
 ~/Google Photos Uploads
 ```
 
-The background watcher uploads them automatically. You can leave the folder and the app alone.
+They are the same folder — Downloads contains a shortcut to the real folder, which lives in your home directory so the background watcher can read it. The watcher uploads anything you drop in automatically. You can leave the folder and the app alone.
 
 The helper window also has:
 

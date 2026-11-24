@@ -23,6 +23,7 @@ SIGNIN_URL = "https://accounts.google.com/embedded/setup/v2/android"
 TOKEN_COOKIE = "oauth_token"
 REPO = Path(__file__).resolve().parent
 DROP_DIR = Path.home() / "Google Photos Uploads"
+DOWNLOAD_ALIAS = Path.home() / "Downloads" / "Photo Backup Drop"
 GOTOHP_BIN = REPO / "gotohp-cli-macos-universal"
 WATCH_SCRIPT = REPO / "google-unlimited.sh"
 
@@ -84,6 +85,13 @@ def configure(token):
         os.chmod(config, 0o600)
 
     DROP_DIR.mkdir(parents=True, exist_ok=True)
+    # Downloads is protected by macOS privacy controls, which block the
+    # background watcher. Keep the real folder in the home directory and give
+    # her a convenient alias inside Downloads to drag photos into.
+    DOWNLOAD_ALIAS.parent.mkdir(parents=True, exist_ok=True)
+    if not DOWNLOAD_ALIAS.exists():
+        DOWNLOAD_ALIAS.symlink_to(DROP_DIR, target_is_directory=True)
+
     (REPO / "watch_dirs.txt").write_text(
         "# Only this folder is monitored and backed up.\n" + str(DROP_DIR) + "\n"
     )
@@ -96,7 +104,8 @@ def configure(token):
     accounts = run([str(GOTOHP_BIN), "creds", "list"], cwd=REPO)
     emit("Done. Active account:")
     emit(accounts.stdout.strip() or "(see gotohp creds list)")
-    emit(f"Drop photos into: {DROP_DIR}")
+    emit(f"Drop photos into the 'Photo Backup Drop' folder in Downloads.")
+    emit(f"(That is a shortcut to {DROP_DIR})")
 
 
 def worker():
