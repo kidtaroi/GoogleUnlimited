@@ -1,5 +1,7 @@
 # GoogleUnlimited
 
+> **macOS quick setup:** This fork includes a desktop helper that handles Google sign-in without DevTools. See [README-WIFE.md](README-WIFE.md).
+
 > Automated, cross-platform media synchronization utility for Google Photos.  
 > Runs as a lightweight native background watcher on Windows, macOS, and Linux to automatically sync photos and videos using Google Pixel device emulation powered by [`xob0t/gotohp`](https://github.com/xob0t/gotohp) — without virtual machines, Android emulators, Windows Subsystem for Android (WSA), or WSL.
 

@@ -896,6 +896,11 @@ do_enable_startup() {
     </array>
     <key>WorkingDirectory</key>
     <string>$SCRIPT_DIR</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
     <key>RunAtLoad</key>
     <true/>
     <key>KeepAlive</key>
@@ -1162,14 +1167,14 @@ EOF
     est_total_sec=$(awk -v b="$size_bytes" -v s="$est_speed" 'BEGIN { t = b / s; if (t < 3.0) t = 3.0; printf "%.1f", t }')
 
     local out_tmp
-    out_tmp="$(mktemp "${TMPDIR:-/tmp}/gotohp_up_XXXXXX.log")"
+    out_tmp="$(mktemp -t gotohp_up 2>/dev/null)" || out_tmp="${TMPDIR:-/tmp}/gotohp_up_$$_$RANDOM.log"
     chmod 600 "$out_tmp" 2>/dev/null || true
     CURRENT_UPLOAD_TMP="$out_tmp"
 
     local start_time
     start_time=$(date +%s)
 
-    run_gotohp upload --no-tui "$fpath" > "$out_tmp" 2>&1 &
+    run_gotohp upload --no-tui "$fpath" > "$out_tmp" 2>&1 < /dev/null &
     local upload_pid=$!
     CURRENT_UPLOAD_PID="$upload_pid"
 
@@ -1262,10 +1267,10 @@ EOF
     [ "$duration" -lt 1 ] && duration=1
 
     local output=""
-    if [ -f "$out_tmp" ]; then
+    if [ -f "$out_tmp" ] && [ -n "$out_tmp" ]; then
         output="$(cat "$out_tmp")"
-        rm -f "$out_tmp" 2>/dev/null || true
     fi
+    [ -n "$out_tmp" ] && [ -f "$out_tmp" ] && rm -f "$out_tmp" 2>/dev/null || true
     CURRENT_UPLOAD_TMP=""
 
     local mkey=""
